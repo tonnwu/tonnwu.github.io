@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/W_16x16.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/W_32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/W_16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://example.com').hostname,
+    root: '/',
+    scheme: 'Mist',
+    version: '7.7.1',
+    exturl: false,
+    sidebar: {"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="1 方法论笔试：注重时间复杂度，可以不考虑空间复杂度 面试：一定要是时间复杂度最优的情况下空间也是最优的方法 2 解链表题常用方法 借助常用数据结构(栈、队列、哈希表等) :star:快慢指针   链表题目主要是考察coding能力">
+<meta property="og:type" content="article">
+<meta property="og:title" content="链表基础">
+<meta property="og:url" content="http://example.com/2020/12/20/%E9%93%BE%E8%A1%A8/index.html">
+<meta property="og:site_name" content="TONN de博客">
+<meta property="og:description" content="1 方法论笔试：注重时间复杂度，可以不考虑空间复杂度 面试：一定要是时间复杂度最优的情况下空间也是最优的方法 2 解链表题常用方法 借助常用数据结构(栈、队列、哈希表等) :star:快慢指针   链表题目主要是考察coding能力">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/tonnwu/PicGo/master/tonnweb/2020/10/image-20201209205032305.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/tonnwu/PicGo/master/tonnweb/2020/12/image-20201209213604015.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/tonnwu/PicGo/master/tonnweb/2020/12/image-20201209213604015.png">
+<meta property="og:image" content="e:/program_data/Typora/Image/微信图片_20201210213958.jpg">
+<meta property="og:image" content="e:/program_data/Typora/Image/微信图片_20201210214004.jpg">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5740965-68212411898859df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/771/format/webp">
+<meta property="article:published_time" content="2020-12-20T11:02:27.000Z">
+<meta property="article:modified_time" content="2020-12-20T14:55:11.373Z">
+<meta property="article:author" content="Tonn">
+<meta property="article:tag" content="链表">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/tonnwu/PicGo/master/tonnweb/2020/10/image-20201209205032305.png">
+
+<link rel="canonical" href="http://example.com/2020/12/20/%E9%93%BE%E8%A1%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>链表基础 | TONN de博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TONN de博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/20/%E9%93%BE%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Tonn">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TONN de博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          链表基础
+        </h1>
+
+        <div class="post-meta">
+		
+		
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-20 19:02:27 / 修改时间：22:55:11" itemprop="dateCreated datePublished" datetime="2020-12-20T19:02:27+08:00">2020-12-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index">
+                    <span itemprop="name">Java后端</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E5%90%8E%E7%AB%AF/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index">
+                    <span itemprop="name">算法与数据结构</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-方法论"><a href="#1-方法论" class="headerlink" title="1 方法论"></a>1 方法论</h3><p>笔试：注重时间复杂度，可以不考虑空间复杂度</p>
+<p>面试：一定要是时间复杂度最优的情况下空间也是最优的方法</p>
+<h3 id="2-解链表题常用方法"><a href="#2-解链表题常用方法" class="headerlink" title="2 解链表题常用方法"></a>2 解链表题常用方法</h3><ul>
+<li>借助常用数据结构(栈、队列、哈希表等)</li>
+<li>:star:快慢指针</li>
+</ul>
+<blockquote>
+<p>链表题目主要是考察coding能力</p>
+</blockquote>
+<a id="more"></a>
+
+<h3 id="3-例题"><a href="#3-例题" class="headerlink" title="3 例题"></a>3 例题</h3><h4 id="3-1-快慢指针"><a href="#3-1-快慢指针" class="headerlink" title="3.1 快慢指针"></a>3.1 快慢指针</h4><p><strong>题目：</strong></p>
+<p><img src="https://raw.githubusercontent.com/tonnwu/PicGo/master/tonnweb/2020/10/image-20201209205032305.png" alt="image-20201209205032305"></p>
+<p><img src="https://raw.githubusercontent.com/tonnwu/PicGo/master/tonnweb/2020/12/image-20201209213604015.png" alt="img"></p>
+<p><strong>思路：</strong>快指针的速度比慢指针的速度快一倍，所以当快指针到链表末尾时，慢指针会到近似中点的位置</p>
+<p><strong>代码：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 奇数返回中点，偶数返回上中点</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">midOrUpMidNode</span><span class="params">(Node head)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (head == <span class="keyword">null</span> || head.next == <span class="keyword">null</span> || head.next.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> head;</span><br><span class="line">		&#125;</span><br><span class="line">		Node slow = head.next;</span><br><span class="line">		Node fast = head.next.next;</span><br><span class="line">		<span class="keyword">while</span> (fast.next != <span class="keyword">null</span> &amp;&amp; fast.next.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">			slow = slow.next;</span><br><span class="line">			fast = fast.next.next;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> slow;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>备注：</strong> </p>
+<ul>
+<li><p>常用于其它链表题中求中间位置</p>
+</li>
+<li><p><font color='red'>如何通过我们需要找到的近似中点来确定初始条件</font>(例如奇数长度 -&gt; 中点下一个，偶数长度 -&gt; 下中点该如何设置初始条件？)</p>
+</li>
+</ul>
+<h4 id="3-2-is回文链表"><a href="#3-2-is回文链表" class="headerlink" title="3.2  is回文链表"></a>3.2  is回文链表</h4><p><strong>题目：</strong></p>
+<p>给定一个单链表的头节点head，请判断该链表是否为回文结构。</p>
+<p><strong>思路：</strong></p>
+<ul>
+<li><p>栈方法：</p>
+<blockquote>
+<p>方法1： 遍历每个节点，储存到栈当中，然后依次弹出栈的元素与链从头遍历比较</p>
+<p>(时间复杂度O(n),空间复杂度O(n) )</p>
+</blockquote>
+<blockquote>
+<p> 方法2： 找到链表的中点(奇数长度 -&gt; 中点下一个，偶数长度 -&gt; 下中点)。从中点后开始遍历每个节点，储存到栈当中，然后依次弹出栈的元素与链从头遍历比较</p>
+<p>(时间复杂度O(n),空间复杂度O(n/2) )</p>
+</blockquote>
+</li>
+<li><p>不需要额外空间的方法</p>
+<blockquote>
+<p>找到链表的中点(<strong>奇数长度 -&gt; 中点下一个，偶数长度 -&gt; 下中点</strong>)，从中点后开始对每个一个节点进行逆序，直到末尾建立一个新头。然后同时从<strong>两端</strong>的头节点向<strong>中间</strong>开始遍历并依个比较。(时间复杂度O(n),空间复杂度O(1) )。<strong>注意结束后复原链表</strong></p>
+</blockquote>
+</li>
+</ul>
+<p><strong>代码：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// need n extra space</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isPalindrome1</span><span class="params">(Node head)</span> </span>&#123;</span><br><span class="line">    Stack&lt;Node&gt; stack = <span class="keyword">new</span> Stack&lt;Node&gt;();</span><br><span class="line">    Node cur = head;</span><br><span class="line">    <span class="keyword">while</span> (cur != <span class="keyword">null</span>) &#123;</span><br><span class="line">        stack.push(cur);</span><br><span class="line">        cur = cur.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (head != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (head.value != stack.pop().value) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        head = head.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// need n/2 extra space</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isPalindrome2</span><span class="params">(Node head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span> || head.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Node right = head.next;</span><br><span class="line">    Node cur = head;</span><br><span class="line">    <span class="keyword">while</span> (cur.next != <span class="keyword">null</span> &amp;&amp; cur.next.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">        right = right.next;</span><br><span class="line">        cur = cur.next.next;</span><br><span class="line">    &#125;</span><br><span class="line">    Stack&lt;Node&gt; stack = <span class="keyword">new</span> Stack&lt;Node&gt;();</span><br><span class="line">    <span class="keyword">while</span> (right != <span class="keyword">null</span>) &#123;</span><br><span class="line">        stack.push(right);</span><br><span class="line">        right = right.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (!stack.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (head.value != stack.pop().value) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        head = head.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// need O(1) extra space</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isPalindrome3</span><span class="params">(Node head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span> || head.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Node n1 = head;</span><br><span class="line">    Node n2 = head;</span><br><span class="line">    <span class="keyword">while</span> (n2.next != <span class="keyword">null</span> &amp;&amp; n2.next.next != <span class="keyword">null</span>) &#123; <span class="comment">// find mid node</span></span><br><span class="line">        n1 = n1.next; <span class="comment">// n1 -&gt; mid</span></span><br><span class="line">        n2 = n2.next.next; <span class="comment">// n2 -&gt; end</span></span><br><span class="line">    &#125;</span><br><span class="line">    n2 = n1.next; <span class="comment">// n2 -&gt; right part first node</span></span><br><span class="line">    n1.next = <span class="keyword">null</span>; <span class="comment">// mid.next -&gt; null</span></span><br><span class="line">    Node n3 = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">while</span> (n2 != <span class="keyword">null</span>) &#123; <span class="comment">// right part convert</span></span><br><span class="line">        n3 = n2.next; <span class="comment">// n3 -&gt; save next node</span></span><br><span class="line">        n2.next = n1; <span class="comment">// next of right node convert</span></span><br><span class="line">        n1 = n2; <span class="comment">// n1 move</span></span><br><span class="line">        n2 = n3; <span class="comment">// n2 move</span></span><br><span class="line">    &#125;</span><br><span class="line">    n3 = n1; <span class="comment">// n3 -&gt; save last node</span></span><br><span class="line">    n2 = head;<span class="comment">// n2 -&gt; left first node</span></span><br><span class="line">    <span class="keyword">boolean</span> res = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">while</span> (n1 != <span class="keyword">null</span> &amp;&amp; n2 != <span class="keyword">null</span>) &#123; <span class="comment">// check palindrome</span></span><br><span class="line">        <span class="keyword">if</span> (n1.value != n2.value) &#123;</span><br><span class="line">            res = <span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        n1 = n1.next; <span class="comment">// left to mid</span></span><br><span class="line">        n2 = n2.next; <span class="comment">// right to mid</span></span><br><span class="line">    &#125;</span><br><span class="line">    n1 = n3.next;</span><br><span class="line">    n3.next = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">while</span> (n1 != <span class="keyword">null</span>) &#123; <span class="comment">// recover list</span></span><br><span class="line">        n2 = n1.next;</span><br><span class="line">        n1.next = n3;</span><br><span class="line">        n3 = n1;</span><br><span class="line">        n1 = n2;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-链表的partition"><a href="#3-3-链表的partition" class="headerlink" title="3.3  链表的partition"></a>3.3  链表的partition</h4><p><strong>题目：</strong></p>
+<p>将单向链表按某值划分成左边小、中间相等、右边大的形式。</p>
+<p><strong>思路：</strong></p>
+<ul>
+<li><p>把链表放入数组里，在数组上做partition（笔试用）</p>
+<blockquote>
+<p>partition见排序总结(时间复杂度O(n),空间复杂度O(n) )</p>
+</blockquote>
+</li>
+<li><p>分成小、中、大三部分，再把各个部分之间串起来</p>
+<p><img src="https://raw.githubusercontent.com/tonnwu/PicGo/master/tonnweb/2020/12/image-20201209213604015.png" alt="image-20201209213604015"></p>
+</li>
+</ul>
+<p><strong>代码：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 把链表装入数组中然后利用数组的partition方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">listPartition1</span><span class="params">(Node head, <span class="keyword">int</span> pivot)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> head;</span><br><span class="line">    &#125;</span><br><span class="line">    Node cur = head;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (cur != <span class="keyword">null</span>) &#123;</span><br><span class="line">        i++;</span><br><span class="line">        cur = cur.next;</span><br><span class="line">    &#125;</span><br><span class="line">    Node[] nodeArr = <span class="keyword">new</span> Node[i];</span><br><span class="line">    i = <span class="number">0</span>;</span><br><span class="line">    cur = head;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i != nodeArr.length; i++) &#123;</span><br><span class="line">        nodeArr[i] = cur;</span><br><span class="line">        cur = cur.next;</span><br><span class="line">    &#125;</span><br><span class="line">    arrPartition(nodeArr, pivot);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i != nodeArr.length; i++) &#123;</span><br><span class="line">        nodeArr[i - <span class="number">1</span>].next = nodeArr[i];</span><br><span class="line">    &#125;</span><br><span class="line">    nodeArr[i - <span class="number">1</span>].next = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> nodeArr[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">arrPartition</span><span class="params">(Node[] nodeArr, <span class="keyword">int</span> pivot)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> small = -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> big = nodeArr.length;</span><br><span class="line">    <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (index != big) &#123;</span><br><span class="line">        <span class="keyword">if</span> (nodeArr[index].value &lt; pivot) &#123;</span><br><span class="line">            swap(nodeArr, ++small, index++);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nodeArr[index].value == pivot) &#123;</span><br><span class="line">            index++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            swap(nodeArr, --big, index);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">listPartition2</span><span class="params">(Node head, <span class="keyword">int</span> pivot)</span> </span>&#123;</span><br><span class="line">    Node sH = <span class="keyword">null</span>; <span class="comment">// small head</span></span><br><span class="line">    Node sT = <span class="keyword">null</span>; <span class="comment">// small tail</span></span><br><span class="line">    Node eH = <span class="keyword">null</span>; <span class="comment">// equal head</span></span><br><span class="line">    Node eT = <span class="keyword">null</span>; <span class="comment">// equal tail</span></span><br><span class="line">    Node mH = <span class="keyword">null</span>; <span class="comment">// big head</span></span><br><span class="line">    Node mT = <span class="keyword">null</span>; <span class="comment">// big tail</span></span><br><span class="line">    Node next = <span class="keyword">null</span>; <span class="comment">// save next node</span></span><br><span class="line">    <span class="comment">// every node distributed to three lists</span></span><br><span class="line">    <span class="keyword">while</span> (head != <span class="keyword">null</span>) &#123;</span><br><span class="line">        next = head.next;</span><br><span class="line">        head.next = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (head.value &lt; pivot) &#123;</span><br><span class="line">            <span class="keyword">if</span> (sH == <span class="keyword">null</span>) &#123;</span><br><span class="line">                sH = head;</span><br><span class="line">                sT = head;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                sT.next = head;</span><br><span class="line">                sT = head;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (head.value == pivot) &#123;</span><br><span class="line">            <span class="keyword">if</span> (eH == <span class="keyword">null</span>) &#123;</span><br><span class="line">                eH = head;</span><br><span class="line">                eT = head;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                eT.next = head;</span><br><span class="line">                eT = head;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (mH == <span class="keyword">null</span>) &#123;</span><br><span class="line">                mH = head;</span><br><span class="line">                mT = head;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                mT.next = head;</span><br><span class="line">                mT = head;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        head = next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// small and equal reconnect</span></span><br><span class="line">    <span class="keyword">if</span> (sT != <span class="keyword">null</span>) &#123; <span class="comment">// 如果有小于区域</span></span><br><span class="line">        sT.next = eH;</span><br><span class="line">        eT = eT == <span class="keyword">null</span> ? sT : eT; <span class="comment">// 下一步，谁去连大于区域的头，谁就变成eT</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 上面的if，不管跑了没有，et</span></span><br><span class="line">    <span class="comment">// all reconnect</span></span><br><span class="line">    <span class="keyword">if</span> (eT != <span class="keyword">null</span>) &#123; <span class="comment">// 如果小于区域和等于区域，不是都没有</span></span><br><span class="line">        eT.next = mH;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sH != <span class="keyword">null</span> ? sH : (eH != <span class="keyword">null</span> ? eH : mH);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-4-克隆随机链表"><a href="#3-4-克隆随机链表" class="headerlink" title="3.4  克隆随机链表"></a>3.4  克隆随机链表</h4><p><strong>题目：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">int</span> value;</span><br><span class="line">	<span class="keyword">public</span> Node next;</span><br><span class="line">	<span class="keyword">public</span> Node rand;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> data)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.value = data;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>rand指针是单链表节点结构中新增的指针，rand可能指向链表中的任意一个节点，也可能指向null。给定一个由Node节点类型组成的无环单链表的头节点head，请实现一个函数完成这个链表的复制，并返回复制的新链表的头节点。<br><strong>思路：</strong></p>
+<p>1 使用哈希图</p>
+<blockquote>
+<p>时间复杂度O(N)，额外空间复杂度O(N)</p>
+</blockquote>
+<p><img src="E:\program_data\Typora\Image\微信图片_20201210213958.jpg" alt="微信图片_20201210213958"></p>
+<p>2 只使用链表</p>
+<blockquote>
+<p>时间复杂度O(N)，额外空间复杂度O(1)</p>
+</blockquote>
+<p><img src="E:\program_data\Typora\Image\微信图片_20201210214004.jpg" alt="微信图片_20201210214004"></p>
+<p><strong>代码：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">copyListWithRand1</span><span class="params">(Node head)</span> </span>&#123;</span><br><span class="line">    HashMap&lt;Node, Node&gt; map = <span class="keyword">new</span> HashMap&lt;Node, Node&gt;();</span><br><span class="line">    Node cur = head;</span><br><span class="line">    <span class="keyword">while</span> (cur != <span class="keyword">null</span>) &#123;</span><br><span class="line">        map.put(cur, <span class="keyword">new</span> Node(cur.value));</span><br><span class="line">        cur = cur.next;</span><br><span class="line">    &#125;</span><br><span class="line">    cur = head;</span><br><span class="line">    <span class="keyword">while</span> (cur != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// cur 老</span></span><br><span class="line">        <span class="comment">// map.get(cur) 新</span></span><br><span class="line">        map.get(cur).next = map.get(cur.next);</span><br><span class="line">        map.get(cur).rand = map.get(cur.rand);</span><br><span class="line">        cur = cur.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> map.get(head);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">copyListWithRand2</span><span class="params">(Node head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Node cur = head;</span><br><span class="line">    Node next = <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">// copy node and link to every node</span></span><br><span class="line">    <span class="comment">// 1 -&gt; 2</span></span><br><span class="line">    <span class="comment">// 1 -&gt; 1&#x27; -&gt; 2</span></span><br><span class="line">    <span class="keyword">while</span> (cur != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// cur 老</span></span><br><span class="line">        next = cur.next;</span><br><span class="line">        cur.next = <span class="keyword">new</span> Node(cur.value);</span><br><span class="line">        cur.next.next = next;</span><br><span class="line">        cur = next;</span><br><span class="line">    &#125;</span><br><span class="line">    cur = head;</span><br><span class="line">    Node curCopy = <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">// set copy node rand</span></span><br><span class="line">    <span class="comment">// 1 -&gt; 1&#x27; -&gt; 2 -&gt; 2&#x27;</span></span><br><span class="line">    <span class="keyword">while</span> (cur != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// cur 老</span></span><br><span class="line">        <span class="comment">// cur.next  新 copy</span></span><br><span class="line">        next = cur.next.next;</span><br><span class="line">        curCopy = cur.next;</span><br><span class="line">        curCopy.rand = cur.rand != <span class="keyword">null</span> ? cur.rand.next : <span class="keyword">null</span>;</span><br><span class="line">        cur = next;</span><br><span class="line">    &#125;</span><br><span class="line">    Node res = head.next;</span><br><span class="line">    cur = head;</span><br><span class="line">    <span class="comment">// split</span></span><br><span class="line">    <span class="keyword">while</span> (cur != <span class="keyword">null</span>) &#123;</span><br><span class="line">        next = cur.next.next;</span><br><span class="line">        curCopy = cur.next;</span><br><span class="line">        cur.next = next;</span><br><span class="line">        curCopy.next = next != <span class="keyword">null</span> ? next.next : <span class="keyword">null</span>;</span><br><span class="line">        cur = next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-5-判断链表公共节点"><a href="#3-5-判断链表公共节点" class="headerlink" title="3.5 判断链表公共节点"></a>3.5 判断链表公共节点</h4><p><strong>问题：</strong> </p>
+<p>给定两个可能有环也可能无环的单链表，头节点head1和head2。请实现一个函数，如果两个链表相交，请返回相交的第一个节点。如果不相交，返回null。要求：如果两个链表长度之和为N，时间复杂度请达到O(N)，额外空间复杂度请达到O(1)。</p>
+<p><strong>思路：</strong></p>
+<ul>
+<li><p>分析两个链表可能出现的情况：</p>
+<ul>
+<li>两个都无环<ul>
+<li>没有公共交点</li>
+<li>有公共交点</li>
+</ul>
+</li>
+<li>一个有环一个无环—–不可能相交</li>
+<li>两个都有环<ul>
+<li>没有公共节点</li>
+<li>入环节点相同</li>
+<li>入环节点不同</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>求无环链表的相交节点</p>
+<blockquote>
+<p> 从两个链表的头开始向后遍历，记录经历的节点数。当到达链表末端时，求出两个链表的长度差。然后长链表先走，直到剩下的长度与短链表相同。最后再同时遍历 逐个判断是否相等</p>
+</blockquote>
+</li>
+<li><p>求入环节点的方法</p>
+<blockquote>
+<p>1 判断是否有环： 是否快慢指针观察是否相遇，记录相遇位置，不相遇返回<code>null</code></p>
+<p>2 求入环节点： 建立新指针从头节点出发以及从相遇节点出发，再一次相遇的位置就是入环节点</p>
+</blockquote>
+<p><img src="https://upload-images.jianshu.io/upload_images/5740965-68212411898859df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/771/format/webp" alt="img"></p>
+</li>
+</ul>
+<p><strong>代码：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 无环链表相交节点</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">getIntersectNode</span><span class="params">(Node head1, Node head2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head1 == <span class="keyword">null</span> || head2 == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Node loop1 = getLoopNode(head1);</span><br><span class="line">    Node loop2 = getLoopNode(head2);</span><br><span class="line">    <span class="keyword">if</span> (loop1 == <span class="keyword">null</span> &amp;&amp; loop2 == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> noLoop(head1, head2);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (loop1 != <span class="keyword">null</span> &amp;&amp; loop2 != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> bothLoop(head1, loop1, head2, loop2);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 找到链表第一个入环节点，如果无环，返回null</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">getLoopNode</span><span class="params">(Node head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span> || head.next == <span class="keyword">null</span> || head.next.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// n1 慢  n2 快</span></span><br><span class="line">    Node n1 = head.next; <span class="comment">// n1 -&gt; slow</span></span><br><span class="line">    Node n2 = head.next.next; <span class="comment">// n2 -&gt; fast</span></span><br><span class="line">    <span class="keyword">while</span> (n1 != n2) &#123;</span><br><span class="line">        <span class="keyword">if</span> (n2.next == <span class="keyword">null</span> || n2.next.next == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        n2 = n2.next.next;</span><br><span class="line">        n1 = n1.next;</span><br><span class="line">    &#125;</span><br><span class="line">    n2 = head; <span class="comment">// n2 -&gt; walk again from head</span></span><br><span class="line">    <span class="keyword">while</span> (n1 != n2) &#123;</span><br><span class="line">        n1 = n1.next;</span><br><span class="line">        n2 = n2.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果两个链表都无环，返回第一个相交节点，如果不想交，返回null</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">noLoop</span><span class="params">(Node head1, Node head2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head1 == <span class="keyword">null</span> || head2 == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Node cur1 = head1;</span><br><span class="line">    Node cur2 = head2;</span><br><span class="line">    <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (cur1.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">        n++;</span><br><span class="line">        cur1 = cur1.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (cur2.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">        n--;</span><br><span class="line">        cur2 = cur2.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cur1 != cur2) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// n  :  链表1长度减去链表2长度的值</span></span><br><span class="line">    cur1 = n &gt; <span class="number">0</span> ? head1 : head2; <span class="comment">// 谁长，谁的头变成cur1</span></span><br><span class="line">    cur2 = cur1 == head1 ? head2 : head1; <span class="comment">// 谁短，谁的头变成cur2</span></span><br><span class="line">    <span class="comment">// 长链表先走插值步</span></span><br><span class="line">    n = Math.abs(n);</span><br><span class="line">    <span class="keyword">while</span> (n != <span class="number">0</span>) &#123;</span><br><span class="line">        n--;</span><br><span class="line">        cur1 = cur1.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (cur1 != cur2) &#123;</span><br><span class="line">        cur1 = cur1.next;</span><br><span class="line">        cur2 = cur2.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cur1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 两个有环链表，返回第一个相交节点，如果不想交返回null</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Node <span class="title">bothLoop</span><span class="params">(Node head1, Node loop1, Node head2, Node loop2)</span> </span>&#123;</span><br><span class="line">    Node cur1 = <span class="keyword">null</span>;</span><br><span class="line">    Node cur2 = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (loop1 == loop2) &#123;</span><br><span class="line">        cur1 = head1;</span><br><span class="line">        cur2 = head2;</span><br><span class="line">        <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (cur1 != loop1) &#123;</span><br><span class="line">            n++;</span><br><span class="line">            cur1 = cur1.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (cur2 != loop2) &#123;</span><br><span class="line">            n--;</span><br><span class="line">            cur2 = cur2.next;</span><br><span class="line">        &#125;</span><br><span class="line">        cur1 = n &gt; <span class="number">0</span> ? head1 : head2;</span><br><span class="line">        cur2 = cur1 == head1 ? head2 : head1;</span><br><span class="line">        n = Math.abs(n);</span><br><span class="line">        <span class="keyword">while</span> (n != <span class="number">0</span>) &#123;</span><br><span class="line">            n--;</span><br><span class="line">            cur1 = cur1.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (cur1 != cur2) &#123;</span><br><span class="line">            cur1 = cur1.next;</span><br><span class="line">            cur2 = cur2.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> cur1;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        cur1 = loop1.next;</span><br><span class="line">        <span class="keyword">while</span> (cur1 != loop1) &#123;</span><br><span class="line">            <span class="keyword">if</span> (cur1 == loop2) &#123;</span><br><span class="line">                <span class="keyword">return</span> loop1;</span><br><span class="line">            &#125;</span><br><span class="line">            cur1 = cur1.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id=""><a href="#" class="headerlink" title=""></a></h4>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag"># 链表</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/20/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%80%92%E5%BD%92/" rel="prev" title="二叉树的递归">
+      <i class="fa fa-chevron-left"></i> 二叉树的递归
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/12/20/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" rel="next" title="基础排序算法总结">
+      基础排序算法总结 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%96%B9%E6%B3%95%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">1 方法论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E9%93%BE%E8%A1%A8%E9%A2%98%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">2 解链表题常用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%BE%8B%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">3 例题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%BF%AB%E6%85%A2%E6%8C%87%E9%92%88"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 快慢指针</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-is%E5%9B%9E%E6%96%87%E9%93%BE%E8%A1%A8"><span class="nav-number">3.2.</span> <span class="nav-text">3.2  is回文链表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E9%93%BE%E8%A1%A8%E7%9A%84partition"><span class="nav-number">3.3.</span> <span class="nav-text">3.3  链表的partition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E5%85%8B%E9%9A%86%E9%9A%8F%E6%9C%BA%E9%93%BE%E8%A1%A8"><span class="nav-number">3.4.</span> <span class="nav-text">3.4  克隆随机链表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-%E5%88%A4%E6%96%AD%E9%93%BE%E8%A1%A8%E5%85%AC%E5%85%B1%E8%8A%82%E7%82%B9"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 判断链表公共节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">3.6.</span> <span class="nav-text"></span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Tonn</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tonn</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v5.1.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/nito.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true}});</script></body>
+</html>
